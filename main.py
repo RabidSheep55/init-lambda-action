@@ -1,6 +1,6 @@
 # Main script for executing the action, used the AWS SDK for python a lot
 # https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
-print("Running main action script...")
+print("[MAIN] Running main action script...")
 import boto3
 import os
 import re
@@ -15,7 +15,7 @@ session = boto3.Session(
     region_name=os.getenv("AWS_REGION"),
 )
 
-print(f"Session initialised for {session.profile_name}")
+print(f"[MAIN] Session initialised for {session.profile_name}")
 
 # Get the name of the function to initialise
 new_function_name = os.getenv("NEW_FUNCTION_NAME")
@@ -36,4 +36,4 @@ ecr_res = ecr_client.create_repository(
 
 # Record created repo arn for later use
 ecr_repo_arn = ecr_res["repository"]["respositoryArn"]
-print(f"[1/{N}] Created new ECR Repo ({ecr_repo_arn})")
+print(f"[MAIN 1/{N}] Created new ECR Repo ({ecr_repo_arn})")
