@@ -3,5 +3,7 @@
 import boto3
 import os
 
+print("Running action python script")
+
 # Inputs to the function are supplied through env variables
 print(f"::set-output name=test::{dict(os.environ)}")

@@ -20,4 +20,4 @@ jobs:
 
       # Use the output from the `test` step
       - name: Get test ouputs
-        run: echo "${{ steps.hello.outputs.test }}"
+        run: echo "${{ toJSON(steps.test) }}"
