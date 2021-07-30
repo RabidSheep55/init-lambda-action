@@ -17,7 +17,8 @@ inputs:
 
 outputs:
   test:
-    description: "test"
+    description: "Test outputs"
+    value: ${{ steps.main-step.outputs.test }}
 
 runs:
   using: "composite"
@@ -27,6 +28,7 @@ runs:
       shell: bash
 
     - name: Run the actual action in python
+      id: main-step
       env:
         NEW_FUNCTION_NAME: ${{ inputs.new-function-name }}
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
