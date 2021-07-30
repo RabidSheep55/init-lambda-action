@@ -1,0 +1,23 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test the action
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Initialise Lambda function and associated resources
+        uses: ./ # Uses an action in the root directory
+        id: test
+        with:
+          new-function-name: TestLambdaFunction
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+
+      # Use the output from the `test` step
+      - name: Get test ouputs
+        run: echo "${{ steps.hello.outputs.test }}"

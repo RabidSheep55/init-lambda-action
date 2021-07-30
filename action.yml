@@ -1,0 +1,24 @@
+name: "Provision and Initialise Containerised Lambda Function on AWS"
+description: "Automatically creates a new ECR Repository, Lambda Function, Policy and Pipeline user."
+author: "Pierre Tharreau"
+inputs:
+  new-function-name:
+    description: "Name of the new lambda function to create"
+    required: true
+  aws-access-key-id:
+    description: "AWS Credentials for user assumed when initialising resources"
+    required: true
+  aws-secret-access-key:
+    description: "AWS Credentials for user assumed when initialising resources"
+    required: true
+  aws-region:
+    description: "AWS region in which to initialise resources"
+    required: true
+
+outputs:
+  test:
+    description: "test"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
