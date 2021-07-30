@@ -1,15 +1,7 @@
-# Base image contains awscli and pip
-FROM woahbase/alpine-awscli
+# Placeholder image to upload to ecr when initialising the lambda function
+FROM public.ecr.aws/lambda/python:3.8
 
-RUN mkdir app
-WORKDIR /app
+WORKDIR ${LAMBDA_TASK_ROOT}
+RUN echo "def handler(e, c): return 'Placeholder Image for Grading/Algorithm Function'" > app.py
 
-# Copy code and install requirements
-COPY action.yml main.py requirements.txt .
-RUN pip install --no-cache-dir -r ./requirements.txt
-
-# Setup to be able to run main.py
-ENV PYTHONPATH /app
-
-# Code file to execute when the docker container starts up
-CMD ["./main.py"]
+CMD ["app.handler"]
