@@ -1,7 +1,7 @@
 # Main script for executing the action, used the AWS SDK for python a lot
 # https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 print("Running main action script...")
-import boto3
+import boto3, botocore
 import docker
 import os
 import re
@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv("dev.env")
 
 # Number of 'steps' in this script
-N = 1
+N = 6
 
 # Initialise a new boto3 session with the given credentials
 session = boto3.Session(
@@ -35,16 +35,31 @@ Create a new ECR Repository
 """
 ecr_client = session.client("ecr")
 
-ecr_res = ecr_client.create_repository(
-    repositoryName=new_ecr_repo_name,
-    imageTagMutability="MUTABLE",
-    imageScanningConfiguration={"scanOnPush": False},
-)
+try:
+    ecr_res = ecr_client.create_repository(
+        repositoryName=new_ecr_repo_name,
+        imageTagMutability="MUTABLE",
+        imageScanningConfiguration={"scanOnPush": False},
+    )
 
-# Record created repo arn and uri for later use
-ecr_repo_arn = ecr_res["repository"]["repositoryArn"]
-ecr_repo_uri = ecr_res["repository"]["repositoryUri"]
-print(f"[1/{N}] Created new ECR Repo ({ecr_repo_arn})")
+    # Record created repo arn and uri for later use
+    ecr_repo_arn = ecr_res["repository"]["repositoryArn"]
+    ecr_repo_uri = ecr_res["repository"]["repositoryUri"]
+    print(f"[1/{N}] Created new ECR Repo ({ecr_repo_arn})")
+
+except botocore.exceptions.ClientError as e:
+    if e.response["Error"]["Code"] == "RepositoryAlreadyExistsException":
+        print("\tRepo already existed but continuing anyways")
+
+        # We need to fetch info about the registry and make the arns on our own
+        res = ecr_client.describe_registry()
+        ecr_repo_arn = (
+            f"arn:aws:ecr:eu-west-2:{res['registryId']}:repository/{new_ecr_repo_name}"
+        )
+        ecr_repo_uri = f"{res['registryId']}.dkr.ecr.{os.getenv('AWS_REGION')}.amazonaws.com/{new_ecr_repo_name}"
+        print(f"[1/{N}] !Repo Existed already, continuing anyways ({ecr_repo_arn})")
+    else:
+        raise e
 
 """
 Build and upload the boilerplate image to the ecr
@@ -75,9 +90,6 @@ docker_res = docker_client.login(
 print(f"[5/{N}] Authenticated Docker Client (Status: {docker_res['Status']})")
 
 # Push boilerplate image to ECR
-for line in docker_client.images.push(
-    repository=boilerplate_img_tag, stream=True, decode=True
-):
-    print("\t" + str(line))
+push_res = docker_client.images.push(repository=boilerplate_img_tag)
 
 print(f"[6/{N}] Pushed Boilerplate image to new ECR Repo")

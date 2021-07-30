@@ -35,6 +35,7 @@ This action provisions and initialises a new containerised lambda function on AW
                 "iam:AttachUserPolicy",
                 "ecr:GetAuthorizationToken",
                 "ecr:InitiateLayerUpload",
+                "ecr:DescribeRegistry",
                 "iam:CreateRole",
                 "iam:CreateUser",
                 "iam:CreateAccessKey"
