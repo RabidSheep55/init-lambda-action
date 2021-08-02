@@ -115,15 +115,18 @@ iam_client = session.client("iam")
 
 iam_res = iam_client.create_role(
     RoleName=new_ecr_repo_name + "-ex",
-    AssumeRolePolicyDocument='{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Principal": { "Service": "lambda.amazonaws.com" }, "Action": "sts:AssumeRole" } ] }',
+    AssumeRolePolicyDocument='{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]}',
     Description=f"Execution role for the {new_lambda_function_name} Lambda Function",
 )
 
 execution_role_arn = iam_res["Role"]["Arn"]
 print(f"[7/{N}] Created new execution role for lambda function ({execution_role_arn})")
 
-# This is not ideal, but it seems it takes a while for the role to be actually usable...
-sleep(5)
+# Attach policy to new role
+iam_client.attach_role_policy(
+    RoleName=new_ecr_repo_name + "-ex",
+    PolicyArn="arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+)
 
 # Finally, create the new lambda function
 lambda_client = session.client("lambda")
