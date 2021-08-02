@@ -6,6 +6,7 @@ import docker
 import os
 import re
 import io
+from time import sleep
 from base64 import b64decode
 
 # FOR TESTING
@@ -120,6 +121,9 @@ iam_res = iam_client.create_role(
 
 execution_role_arn = iam_res["Role"]["Arn"]
 print(f"[7/{N}] Created new execution role for lambda function ({execution_role_arn})")
+
+# This is not ideal, but it seems it takes a while for the role to be actually usable...
+sleep(5)
 
 # Finally, create the new lambda function
 lambda_client = session.client("lambda")
