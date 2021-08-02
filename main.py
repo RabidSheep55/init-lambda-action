@@ -102,6 +102,7 @@ print(f"[5/{N}] Authenticated Docker Client (Status: {docker_res['Status']})")
 
 # Push placeholder image to ECR
 push_res = docker_client.images.push(repository=placeholder_img_tag)
+print(push_res)
 print(f"[6/{N}] Pushed placeholder image to new ECR Repo")
 
 """
