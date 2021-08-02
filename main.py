@@ -74,9 +74,11 @@ docker_client = docker.DockerClient()
 print(f"[2/{N}] Initialised Docker Client ")
 
 # Build the placeholder image
-placeholder_dockerfile = io.StringIO(
-    f"""FROM alpine:3.14
+placeholder_dockerfile = io.BytesIO(
+    str.encode(
+        f"""FROM alpine:3.14
 CMD ["echo", "Placeholder image for the {new_lambda_function_name} lambda function used in initialisation, to be replaced!"]"""
+    )
 )
 
 placeholder_img_tag = ecr_repo_uri + ":latest"
