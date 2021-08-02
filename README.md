@@ -43,6 +43,7 @@ This action provisions and initialises a new containerised lambda function on AW
                 "ecr:UploadLayerPart",,
                 "ecr:CompleteLayerUpload",
                 "ecr:BatchCheckLayerAvailability",
+                "ecr:PutImage",
                 "iam:CreateRole",
                 "iam:CreateUser",
                 "iam:CreateAccessKey",
