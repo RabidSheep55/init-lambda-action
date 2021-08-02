@@ -47,7 +47,8 @@ This action provisions and initialises a new containerised lambda function on AW
                 "iam:CreateRole",
                 "iam:CreateUser",
                 "iam:CreateAccessKey",
-                "iam:GetUser"
+                "iam:GetUser",
+                "iam:AttachRolePolicy"
             ],
             "Resource": "*"
         },
