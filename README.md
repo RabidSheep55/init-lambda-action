@@ -3,7 +3,9 @@
 This action provisions and initialises a new containerised lambda function on AWS. It will automatically create and link the following services:
 
 - A new ECR Repository
+  - Initialised with a placeholder image (built by the action using the docker apk for python)
 - A new Lambda Function
+  - A new execution for the function
 - A new IAM Policy strictly for the CI/CD Pipeline of this new function with the following permissions:
   - Upload new image to the newly created ECR Repo
   - UpdateFunctionCode for the newly create Lambda function
@@ -36,11 +38,24 @@ This action provisions and initialises a new containerised lambda function on AW
                 "ecr:GetAuthorizationToken",
                 "ecr:InitiateLayerUpload",
                 "ecr:DescribeRegistry",
+                "ecr:GetRepositoryPolicy",
+                "ecr:SetRepositoryPolicy",
                 "iam:CreateRole",
                 "iam:CreateUser",
-                "iam:CreateAccessKey"
+                "iam:CreateAccessKey",
+                "iam:GetUser"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "lambda.amazonaws.com"
+                }
+            }
         }
     ]
 }
