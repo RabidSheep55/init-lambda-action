@@ -80,7 +80,7 @@ CMD ["echo", "Placeholder image for the {new_lambda_function_name} lambda functi
 )
 
 placeholder_img_tag = ecr_repo_uri + ":latest"
-docker_client.images.build(path=".", tag=placeholder_img_tag)
+docker_client.images.build(fileobj=placeholder_dockerfile, tag=placeholder_img_tag)
 print(f"[3/{N}] Successfully Built placeholder image")
 
 # Get an authorisation token (to be able to push with docker to AWS ECR)
